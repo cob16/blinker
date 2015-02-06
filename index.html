@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+    <title>My fancy game</title>
+</head>
+<body>
+<p>Use your arrow keys!</p>
+
+<canvas id="canvas" style="border:1px solid #000"></canvas>
+
+<script>
+    // javascript from here
+
+
+    //this makes our game better on the brousers that support setAnimationFrame
+    (function() {
+        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        window.requestAnimationFrame = requestAnimationFrame;
+    })();
+
+
+
+    //first define our size of canvis
+    var canvas = document.getElementById("canvas"),
+            ctx = canvas.getContext("2d"),
+            width = 700,
+            height = 400,
+
+        //now we make our player properties
+            player = {
+                x : width/2,
+                y : height - 5,
+                width : 5,
+                height : 5,
+                speed: 3,
+                velX: 0,
+                velY: 0,
+                jumping : false
+            }
+
+        keys = [];
+
+        inertia = 0.8; //adds some time to stoping, between 0-1
+        gravity = 0.3;
+
+    //other objects
+    var boxes = []
+    //set box positons/size
+    boxes.push({
+        x: 0,
+        y: 0,
+        width: 10,
+        height: height
+    });
+    boxes.push({
+        x: 0,
+        y: height - 2,
+        width: width,
+        height: 50
+    });
+    boxes.push({
+        x: width - 10,
+        y: 0,
+        width: 50,
+        height: height
+    });
+
+
+    // renders and updates the position of entates
+    function update() {
+
+        // check keys
+//        if (keys[38] || keys[87]) {
+//            // up arrow
+//        }
+
+        if (keys[39] || keys[68]) {
+            // right arrow
+            if (player.velX < player.speed) {
+                player.velX++;
+            }
+        }
+
+        if (keys[37] || keys[65]) {
+            // left arrow
+            if (player.velX > -player.speed) {
+                player.velX--;
+            }
+        }
+
+        if (keys[38] || keys[32] || keys[87]) {
+        //if (keys[32]) {
+            // up arrow or space
+            if(!player.jumping){
+                player.jumping = true;
+                player.velY = -player.speed*2;
+            }
+        }
+
+        //lets the player move
+        player.velX *= inertia;
+        player.velY += gravity;
+        player.x += player.velX;
+        player.y += player.velY;
+
+        //traps the player in the canvas!! muhhhaaa! (horasontal trap)
+        if (player.x >= width-player.width) {
+            player.x = width-player.width;
+        } else if (player.x <= 0) {
+            player.x = 0;
+        }
+
+        //traps the player in the canvas (virtical trap)
+        if(player.y >= height - player.height) { //if in air
+            player.y = height - player.height;
+            player.jumping = false;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        //draw other objects
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+
+        for (var i = 0; i < boxes.length; i++) {
+            ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+        }
+
+        ctx.fill();
+
+        //draw a small box, with will become our player
+        ctx.fillStyle = "red";
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+        // run through the loop again
+        requestAnimationFrame(update);
+    }
+
+    //you can not tie keyboard events directly to the canvas element, so they are bind to tge whole page.
+    document.body.addEventListener("keydown", function(e) {
+        keys[e.keyCode] = true;
+    });
+
+    document.body.addEventListener("keyup", function(e) {
+        keys[e.keyCode] = false;
+    });
+
+
+    window.addEventListener("load", function(){ //this calls the loop on page load
+        update();
+    });
+
+</script>
+</body>
+</html>
