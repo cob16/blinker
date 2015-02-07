@@ -65,6 +65,42 @@
         height: height
     });
 
+    //http://www.somethinghitme.com/2013/04/16/creating-a-canvas-platformer-tutorial-part-tw/
+//    function collision_detection(objectA, objectB) {
+//        //get the vectors of the objects
+//        var vX = (objectA.x + (objectA.width /2)) - (objectB.x + (objectB.width /2)),
+//                vY  = (objectA.y + (objectA.height /2)) - (objectB.y + (objectB.height /2)),
+//
+//                //get half the dimentions added together)
+//                hWidths = (objectA.width  / 2 ) + (objectB.width  / 2),
+//                hHights = (objectA.height / 2) + (objectB.height / 2),
+//                col_detected = null;
+//
+//                //if vx and vy vectors are less then half the with or height then there is a collision
+//        //ps the abs() method gets the absolute value of a number eg how far i is away from 0
+//        // retuns t = top collishion, b = bottem ect ect
+//        if (Math.abs(vX) < hWidths && Math.abs(vY) < hHights) {
+//            var oX = hWidths - Math.abs(vX),
+//                    oY = hHeights - Math.abs(vY);
+//
+//            if (oX >= oY) {
+//                if (vY > 0) {
+//                    colDir = "t";
+//                    objectA.y += oY;
+//                } else {
+//                    colDir = "b";
+//                    shapeA.y -= oY;
+//                }
+//        } else {
+//                if (vX > 0) {
+//
+//                } else {
+//
+//                }
+//        }
+//        return col_detected;
+//    }
+
 
     // renders and updates the position of entates
     function update() {
