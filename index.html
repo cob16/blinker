@@ -6,185 +6,168 @@
 <body>
 <p>Use your arrow keys!</p>
 
-<canvas id="canvas" style="border:1px solid #000"></canvas>
+<canvas id="canvas"></canvas>
+
 
 <script>
-    // javascript from here
+   
+   (function () {
+    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+    window.requestAnimationFrame = requestAnimationFrame;
+})();
 
+var health = 1000;
+var maxHealth = 1000;
 
-    //this makes our game better on the brousers that support setAnimationFrame
-    (function() {
-        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-        window.requestAnimationFrame = requestAnimationFrame;
-    })();
-
-
-
-    //first define our size of canvis
-    var canvas = document.getElementById("canvas"),
-            ctx = canvas.getContext("2d"),
-            width = 700,
-            height = 400,
-
-        //now we make our player properties
-            player = {
-                x : width/2,
-                y : height - 5,
-                width : 5,
-                height : 5,
-                speed: 3,
-                velX: 0,
-                velY: 0,
-                jumping : false
-            }
-
-        keys = [];
-
-        inertia = 0.8; //adds some time to stoping, between 0-1
-        gravity = 0.3;
-
-    //other objects
-    var boxes = []
-    //set box positons/size
-    boxes.push({
-        x: 0,
-        y: 0,
+var canvas = document.getElementById("canvas"),
+    ctx = canvas.getContext("2d"),
+    width = 900,
+    height = 700,
+    player = {
+        x: width / 2,
+        y: height - 15,
         width: 10,
-        height: height
-    });
-    boxes.push({
-        x: 0,
-        y: height - 2,
-        width: width,
-        height: 50
-    });
-    boxes.push({
-        x: width - 10,
-        y: 0,
-        width: 50,
-        height: height
-    });
+        height: 10,
+        speed: 4,
+        velX: 0,
+        velY: 0,
+        jumping: false,
+        grounded: false
+    },
+    keys = [],
+    friction = 0.8,
+    gravity = 0.3;
 
-    //http://www.somethinghitme.com/2013/04/16/creating-a-canvas-platformer-tutorial-part-tw/
-//    function collision_detection(objectA, objectB) {
-//        //get the vectors of the objects
-//        var vX = (objectA.x + (objectA.width /2)) - (objectB.x + (objectB.width /2)),
-//                vY  = (objectA.y + (objectA.height /2)) - (objectB.y + (objectB.height /2)),
-//
-//                //get half the dimentions added together)
-//                hWidths = (objectA.width  / 2 ) + (objectB.width  / 2),
-//                hHights = (objectA.height / 2) + (objectB.height / 2),
-//                col_detected = null;
-//
-//                //if vx and vy vectors are less then half the with or height then there is a collision
-//        //ps the abs() method gets the absolute value of a number eg how far i is away from 0
-//        // retuns t = top collishion, b = bottem ect ect
-//        if (Math.abs(vX) < hWidths && Math.abs(vY) < hHights) {
-//            var oX = hWidths - Math.abs(vX),
-//                    oY = hHeights - Math.abs(vY);
-//
-//            if (oX >= oY) {
-//                if (vY > 0) {
-//                    colDir = "t";
-//                    objectA.y += oY;
-//                } else {
-//                    colDir = "b";
-//                    shapeA.y -= oY;
-//                }
-//        } else {
-//                if (vX > 0) {
-//
-//                } else {
-//
-//                }
-//        }
-//        return col_detected;
-//    }
+canvas.width = width;
+canvas.height = height;
 
+var boxes = [];
 
-    // renders and updates the position of entates
-    function update() {
+function loadnewlevel(filename) {
 
-        // check keys
-//        if (keys[38] || keys[87]) {
-//            // up arrow
-//        }
+	console.log("loading:" + filename);
 
-        if (keys[39] || keys[68]) {
-            // right arrow
-            if (player.velX < player.speed) {
-                player.velX++;
-            }
+	//remove old level
+	delete boxes;
+
+	//load the new level
+	var js=document.createElement('script');
+    js.type = "text/javascript";
+    js.src = filename;
+    document.body.appendChild(js);
+}
+
+function update() {
+    // check keys
+    if (keys[38] || keys[32]) {
+        // up arrow or space
+        if (!player.jumping && player.grounded) {
+            player.jumping = true;
+            player.grounded = false;
+            player.velY = -player.speed * 2;
         }
-
-        if (keys[37] || keys[65]) {
-            // left arrow
-            if (player.velX > -player.speed) {
-                player.velX--;
-            }
+    }
+    if (keys[39]) {
+        // right arrow
+        if (player.velX < player.speed) {
+            player.velX++;
         }
-
-        if (keys[38] || keys[32] || keys[87]) {
-        //if (keys[32]) {
-            // up arrow or space
-            if(!player.jumping){
-                player.jumping = true;
-                player.velY = -player.speed*2;
-            }
+    }
+    if (keys[37]) {
+        // left arrow
+        if (player.velX > -player.speed) {
+            player.velX--;
         }
-
-        //lets the player move
-        player.velX *= inertia;
-        player.velY += gravity;
-        player.x += player.velX;
-        player.y += player.velY;
-
-        //traps the player in the canvas!! muhhhaaa! (horasontal trap)
-        if (player.x >= width-player.width) {
-            player.x = width-player.width;
-        } else if (player.x <= 0) {
-            player.x = 0;
-        }
-
-        //traps the player in the canvas (virtical trap)
-        if(player.y >= height - player.height) { //if in air
-            player.y = height - player.height;
-            player.jumping = false;
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-
-        //draw other objects
-        ctx.fillStyle = "black";
-        ctx.beginPath();
-
-        for (var i = 0; i < boxes.length; i++) {
-            ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
-        }
-
-        ctx.fill();
-
-        //draw a small box, with will become our player
-        ctx.fillStyle = "red";
-        ctx.fillRect(player.x, player.y, player.width, player.height);
-        // run through the loop again
-        requestAnimationFrame(update);
     }
 
-    //you can not tie keyboard events directly to the canvas element, so they are bind to tge whole page.
-    document.body.addEventListener("keydown", function(e) {
-        keys[e.keyCode] = true;
-    });
+    player.velX *= friction;
+    player.velY += gravity;
 
-    document.body.addEventListener("keyup", function(e) {
-        keys[e.keyCode] = false;
-    });
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    
+    player.grounded = false;
+    for (var i = 0; i < boxes.length; i++) {
+        ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+        
+        var dir = colCheck(player, boxes[i]);
+
+        if (dir === "l" || dir === "r") {
+            player.velX = 0;
+            player.jumping = false;
+        } else if (dir === "b") {
+            player.grounded = true;
+            player.jumping = false;
+        } else if (dir === "t") {
+            player.velY *= -1;
+        }
+
+    }
+    
+    if(player.grounded){
+         player.velY = 0;
+    }
+    
+    player.x += player.velX;
+    player.y += player.velY;
+
+    ctx.fill();
+    ctx.fillStyle = "red";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    requestAnimationFrame(update);
+}
+
+function colCheck(shapeA, shapeB) {
+    // get the vectors to check against
+    var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
+        vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
+        // add the half widths and half heights of the objects
+        hWidths = (shapeA.width / 2) + (shapeB.width / 2),
+        hHeights = (shapeA.height / 2) + (shapeB.height / 2),
+        colDir = null;
+
+    // if the x and y vector are less than the half width or half height, they we must be inside the object, causing a collision
+    if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
+        // figures out on which side we are colliding (top, bottom, left, or right)
+        var oX = hWidths - Math.abs(vX),
+            oY = hHeights - Math.abs(vY);
+        if (oX >= oY) {
+            if (vY > 0) {
+                colDir = "t";
+                shapeA.y += oY;
+            } else {
+                colDir = "b";
+                shapeA.y -= oY;
+            }
+        } else {
+            if (vX > 0) {
+                colDir = "l";
+                shapeA.x += oX;
+            } else {
+                colDir = "r";
+                shapeA.x -= oX;
+            }
+        }
+    }
+    return colDir;
+}
+
+document.body.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+
+document.body.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});
 
 
-    window.addEventListener("load", function(){ //this calls the loop on page load
-        update();
-    });
+window.addEventListener("load", function () {
+
+	loadnewlevel("level.2.js");
+	update();
+});
 
 </script>
 </body>
