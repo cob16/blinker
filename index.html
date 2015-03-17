@@ -16,8 +16,15 @@
     window.requestAnimationFrame = requestAnimationFrame;
 })();
 
-var health = 1000;
-var maxHealth = 1000;
+var health = 100;
+var maxHealth = 100;
+
+var health_bar = {
+    x: 20,
+    y: 30,
+    width: 300,
+    height: 20
+};
 
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
@@ -45,16 +52,45 @@ var boxes = [];
 
 function loadnewlevel(filename) {
 
-	console.log("loading:" + filename);
+    console.log("loading:" + filename);
 
-	//remove old level
-	delete boxes;
+    //remove old level
+    delete boxes;
 
-	//load the new level
-	var js=document.createElement('script');
+    //load the new level
+    var js=document.createElement('script');
     js.type = "text/javascript";
     js.src = filename;
     document.body.appendChild(js);
+}
+
+function click(event)
+{
+    var x = event.x;
+    var y = event.y;
+
+    var canvas = document.getElementById("canvas");
+
+    x -= canvas.offsetLeft;
+    y -= canvas.offsetTop;
+
+    var dif = Math.round(Math.abs((player.x - x) / 100)) +
+        Math.round(Math.abs((player.y - y) / 100));
+
+    //alert(dif);
+    health -= dif;
+
+    //move the player to positon
+    player.x = x;
+    player.y = y;
+
+
+    player.jumping = true;
+    player.grounded = false;
+    player.velX = 0;
+    player.velY = 0;
+
+
 }
 
 function update() {
@@ -116,6 +152,18 @@ function update() {
     ctx.fillStyle = "red";
     ctx.fillRect(player.x, player.y, player.width, player.height);
 
+    //HP BAR
+    var percent = health / maxHealth;
+    ctx.fillStyle = "Red";
+    ctx.font = "18px sans-serif";
+    ctx.fillText("Life " +health+"/"+maxHealth+" = " + percent * 100 +"%", 20, 20);
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(health_bar.x, health_bar.y, health_bar.width, health_bar.height);
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(health_bar.x, health_bar.y, health_bar.width * percent, health_bar.height);
+
     requestAnimationFrame(update);
 }
 
@@ -164,10 +212,11 @@ document.body.addEventListener("keyup", function (e) {
 
 
 window.addEventListener("load", function () {
-
-	loadnewlevel("level.2.js");
-	update();
+    loadnewlevel("level.2.js");
+    update();
 });
+
+canvas.addEventListener("mousedown", click, false);
 
 </script>
 </body>
