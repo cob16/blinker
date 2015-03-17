@@ -8,7 +8,6 @@
 
 <canvas id="canvas"></canvas>
 
-
 <script>
    
    (function () {
@@ -25,6 +24,8 @@ var health_bar = {
     width: 300,
     height: 20
 };
+
+var telaport = new Audio('assests/teleporter_send.wav');
 
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
@@ -66,14 +67,27 @@ function loadnewlevel(filename) {
 
 function click(event)
 {
-    var x = event.x;
-    var y = event.y;
+    console.log("there was a click"); 
 
-    var canvas = document.getElementById("canvas");
+    // var x = event.x;
+    // var y = event.y;
+    // x -= canvas.offsetLeft;
+    // y -= canvas.offsetTop;
 
-    x -= canvas.offsetLeft;
-    y -= canvas.offsetTop;
+    // if(event.clientY){// FF compatabillaty
+    //     var x = event.clientX - canvas.offsetLeft;
+    //     var y = event.clientY - canvas.offsetTop;
+    // }
 
+    var bounding_box=canvas.getBoundingClientRect();
+    var x =(event.clientX-bounding_box.left) *
+                      (canvas.width/bounding_box.width);        
+    var y =(event.clientY-bounding_box.top) *
+                (canvas.height/bounding_box.height);    
+
+    console.log("at : "+x+"-"+y); 
+
+    //get a number that inceces the further the mose positon is away from the plaer 
     var dif = Math.round(Math.abs((player.x - x) / 100)) +
         Math.round(Math.abs((player.y - y) / 100));
 
@@ -90,6 +104,7 @@ function click(event)
     player.velX = 0;
     player.velY = 0;
 
+    telaport.play();
 
 }
 
@@ -153,7 +168,7 @@ function update() {
     ctx.fillRect(player.x, player.y, player.width, player.height);
 
     //HP BAR
-    var percent =  Math.round(health / maxHealth);
+    var percent =  health / maxHealth;
     ctx.fillStyle = "Red";
     ctx.font = "18px sans-serif";
     ctx.fillText("Life " +health+"/"+maxHealth+" = " + percent * 100 +"%", 20, 20);
