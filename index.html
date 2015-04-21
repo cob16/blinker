@@ -10,46 +10,66 @@
 
 <script>
    
-   (function () {
-    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-    window.requestAnimationFrame = requestAnimationFrame;
-})();
+       (function () {
+        var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        window.requestAnimationFrame = requestAnimationFrame;
+    })();
 
-var health = 100;
-var maxHealth = 100;
+    var health = 50;
+    var maxHealth = 50;
 
-var health_bar = {
-    x: 20,
-    y: 30,
-    width: 300,
-    height: 20
-};
+    var health_bar = {
+        x: 20,
+        y: 30,
+        width: 300,
+        height: 20
+    };
 
-var telaport = new Audio('assests/teleporter_send.wav');
+   var telaport = new Audio('assests/teleporter_send.wav');
 
-var canvas = document.getElementById("canvas"),
-    ctx = canvas.getContext("2d"),
-    width = 900,
-    height = 700,
-    player = {
-        x: width / 2,
-        y: height - 15,
-        width: 10,
-        height: 10,
-        speed: 4,
-        velX: 0,
-        velY: 0,
-        jumping: false,
-        grounded: false
-    },
-    keys = [],
-    friction = 0.8,
-    gravity = 0.3;
+   var canvas = document.getElementById("canvas"),
+        ctx = canvas.getContext("2d"),
+        width = 900,
+        height = 700,
 
-canvas.width = width;
-canvas.height = height;
+        player = {
+            x: width / 2,
+            y: height - 15,
+           width: 10,
+            height: 10,
+            speed: 4,
+            velX: 0,
+            velY: 0,
+            jumping: false,
+            grounded: false
+        },
+        level = {
+            startX : width / 2,
+            startY: height - 15,
 
-var boxes = [];
+            endX: 0,
+            endY: 0
+        }
+
+        keys = [],
+        friction = 0.8,
+        gravity = 0.3;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        var boxes = [];
+
+
+function restartLevel() {
+    health = maxHealth;
+    player.x = level.startX;
+    player.y = level.startY;
+    player.velX = 0;
+    player.velY = 0;
+    player.jumping = false;
+    player.grounded = false;
+}
 
 function loadnewlevel(filename) {
 
@@ -129,6 +149,11 @@ function update() {
         if (player.velX > -player.speed) {
             player.velX--;
         }
+    }
+
+    if (keys[82]) {
+        // R key
+        restartLevel();
     }
 
     player.velX *= friction;

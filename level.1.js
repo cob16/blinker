@@ -1,3 +1,13 @@
+//start and end positions
+var level = {
+    startX : width / 2,
+    startY: height - 15,
+
+    endX: 0,
+    endY: 0
+}
+
+
 var boxes = [];
 
 // dimensions
