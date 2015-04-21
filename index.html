@@ -62,6 +62,7 @@
 
 
 function restartLevel() {
+    //console.log("Level Restarted");
     health = maxHealth;
     player.x = level.startX;
     player.y = level.startY;
@@ -69,6 +70,7 @@ function restartLevel() {
     player.velY = 0;
     player.jumping = false;
     player.grounded = false;
+    console.log("Player sent to ("+player.x+","+player.y+")");
 }
 
 function loadnewlevel(filename) {
@@ -83,11 +85,13 @@ function loadnewlevel(filename) {
     js.type = "text/javascript";
     js.src = filename;
     document.body.appendChild(js);
+
+    console.log("Loading Compete");
 }
 
 function click(event)
 {
-    console.log("there was a click"); 
+    //console.log("there was a click");
 
     // var x = event.x;
     // var y = event.y;
@@ -105,7 +109,7 @@ function click(event)
     var y =(event.clientY-bounding_box.top) *
                 (canvas.height/bounding_box.height);    
 
-    console.log("at : "+x+"-"+y); 
+    console.log("Telaported to: ("+x+","+y+")");
 
     //get a number that inceces the further the mose positon is away from the plaer 
     var dif = Math.round(Math.abs((player.x - x) / 100)) +
@@ -138,13 +142,13 @@ function update() {
             player.velY = -player.speed * 2;
         }
     }
-    if (keys[39]) {
+    if (keys[39] || keys[68]) {
         // right arrow
         if (player.velX < player.speed) {
             player.velX++;
         }
     }
-    if (keys[37]) {
+    if (keys[37] || keys[87]) {
         // left arrow
         if (player.velX > -player.speed) {
             player.velX--;
@@ -196,7 +200,7 @@ function update() {
     var percent =  health / maxHealth;
     ctx.fillStyle = "Red";
     ctx.font = "18px sans-serif";
-    ctx.fillText("Life " +health+"/"+maxHealth+" = " + percent * 100 +"%", 20, 20);
+    ctx.fillText("Life " +health+"/"+maxHealth+" = " + Math.round(percent * 100) +"%", 20, 20);
 
     ctx.fillStyle = "black";
     ctx.fillRect(health_bar.x, health_bar.y, health_bar.width, health_bar.height);
