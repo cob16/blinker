@@ -1,8 +1,8 @@
 //start and end positions
-var level = {
+level = {
+    level: 1,
     startX : width / 2,
     startY: height - 15,
-
     endX: 0,
     endY: 0
 }
