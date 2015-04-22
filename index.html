@@ -9,11 +9,13 @@
 <canvas id="canvas"></canvas>
 
 <script>
-   
-       (function () {
+
+    (function () {
         var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
         window.requestAnimationFrame = requestAnimationFrame;
     })();
+
+    var gameState = 'playing';
 
     var health = 50;
     var maxHealth = 50;
@@ -92,6 +94,11 @@ function loadnewlevel(filename) {
 
 function click(event)
 {
+
+    if (health < 0 ) {
+        restartLevel();
+        update();
+    }
     //console.log("there was a click");
 
     // var x = event.x;
@@ -110,11 +117,13 @@ function click(event)
     var y =(event.clientY-bounding_box.top) *
                 (canvas.height/bounding_box.height);    
 
-    console.log("Telaported to: ("+x+","+y+")");
+    //console.log("Telaported to: ("+x+","+y+")");
 
     //get a number that inceces the further the mose positon is away from the plaer 
     var dif = Math.round(Math.abs((player.x - x) / 100)) +
         Math.round(Math.abs((player.y - y) / 100));
+
+    if(dif < 1) {dif = 1}
 
     //alert(dif);
     health -= dif;
@@ -135,9 +144,6 @@ function click(event)
 
     function update() {
 
-        if(health <= 0) {
-            return "game over";
-        }
         //look to see if player is in level end position
 //      if () {
 //
@@ -204,6 +210,9 @@ function click(event)
 
         //HP BAR
         var percent =  health / maxHealth;
+
+        if(percent);
+
         ctx.fillStyle = "Red";
         ctx.font = "18px sans-serif";
         ctx.fillText("Life " +health+"/"+maxHealth+" = " + Math.round(percent * 100) +"%", 20, 20);
@@ -214,7 +223,11 @@ function click(event)
         ctx.fillStyle = "red";
         ctx.fillRect(health_bar.x, health_bar.y, health_bar.width * percent, health_bar.height);
 
-        requestAnimationFrame(update);
+        if(health <= 0) {
+            requestAnimationFrame(updateGameOver);
+        } else {
+            requestAnimationFrame(update);
+        }
     }
 
     function colCheck(shapeA, shapeB) {
@@ -252,15 +265,64 @@ function click(event)
         return colDir;
     }
 
+    function updateGameOver() {
+    // Restart Button object
+
+        var restartBtn = {
+            w: 100,
+            h: 50,
+            x: canvas.width/2 - 50,
+            y: canvas.height/2 - 50,
+
+            draw: function() {
+                ctx.strokeStyle = "#000000";
+                ctx.lineWidth = "2";
+                ctx.strokeRect(this.x, this.y, this.w, this.h);
+
+                ctx.font = "18px Arial, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStlye = "#000000";
+
+                ctx.fillText("Restart", canvas.width/2, canvas.height/2 - 25 );
+            }
+        };
+
+        restartBtn.draw();
+
+        ctx.fillStlye = "Black";
+        ctx.font = "20px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        //ctx.fillText("Game Over - You scored "+points+" points!", canvas.width/2, canvas.height/2 + 25 );
+        ctx.fillText("Game Over!", canvas.width/2, canvas.height/2 + 25 );
+        ctx.fillText("You scored PLACEHOLDER points!", canvas.width/2, canvas.height/2 + 75 );
+
+        console.log("waiting for user");
+
+//        requestAnimationFrame(updateGameOver);
+    }
+
     function state() {
 
         update();
-
-//       if (update().isEqual("game over")) {
 //
-//       } else if(update().isEqual("next level"){
+//    while (true) {
 //
-//       }
+//        if (update() == "game over") {
+//            console.log("game over");
+//            gameState = state;
+//            updateGameOver();
+//        }
+//
+//        console.log("IT FUCKING BROKEN!");
+//
+////       if (update().isEqual("game over")) {
+////
+////       } else if(update().isEqual("next level"){
+////
+////       }
+//    }
     }
 
     document.body.addEventListener("keydown", function (e) {
@@ -274,7 +336,8 @@ function click(event)
 
     window.addEventListener("load", function () {
         loadnewlevel("level.2.js");
-        update();
+        //gameState = 'playing';
+        state();
     });
 
     canvas.addEventListener("mousedown", click, false);
