@@ -15,14 +15,14 @@
         window.requestAnimationFrame = requestAnimationFrame;
     })();
 
-    var gameState = 'playing';
+    var gameState = 'start';
 
     var health = 50;
     var maxHealth = 50;
 
     var health_bar = {
-        x: 20,
-        y: 30,
+        x: 80,
+        y: 14,
         width: 300,
         height: 20
     };
@@ -63,6 +63,22 @@
 
         var boxes = [];
 
+   var StartBtn = {
+       w: 100,
+       h: 50,
+       x: canvas.width/2 - 50,
+       y: canvas.height/2 - 50,
+       draw: function() {
+           ctx.strokeStyle = "#000000";
+           ctx.lineWidth = "2";
+           ctx.strokeRect(this.x, this.y, this.w, this.h);
+           ctx.font = "18px Arial, sans-serif";
+           ctx.textAlign = "center";
+           ctx.textBaseline = "middle";
+           ctx.fillStlye = "#000000";
+           ctx.fillText("Start", canvas.width/2, canvas.height/4 + 25 );
+       }
+   };
 
 function restartLevel() {
     //console.log("Level Restarted");
@@ -95,43 +111,38 @@ function loadnewlevel(filename) {
 function click(event)
 {
 
-    if (health < 0 ) {
-        restartLevel();
-        update();
+    if (gameState == "start") {
+        gameState = "playing";
+        return;
     }
-    //console.log("there was a click");
+    if (gameState == "game over") {
+        gameState = "playing";
+        restartLevel();
+        return;
+    }
 
-    // var x = event.x;
-    // var y = event.y;
-    // x -= canvas.offsetLeft;
-    // y -= canvas.offsetTop;
+    var bounding_box = canvas.getBoundingClientRect();
+    var x = (event.clientX - bounding_box.left) *
+            (canvas.width / bounding_box.width);
+    var y = (event.clientY - bounding_box.top) *
+            (canvas.height / bounding_box.height);
 
-    // if(event.clientY){// FF compatabillaty
-    //     var x = event.clientX - canvas.offsetLeft;
-    //     var y = event.clientY - canvas.offsetTop;
-    // }
-
-    var bounding_box=canvas.getBoundingClientRect();
-    var x =(event.clientX-bounding_box.left) *
-                      (canvas.width/bounding_box.width);        
-    var y =(event.clientY-bounding_box.top) *
-                (canvas.height/bounding_box.height);    
-
-    //console.log("Telaported to: ("+x+","+y+")");
-
-    //get a number that inceces the further the mose positon is away from the plaer 
+        //get a number that inceces the further the mose positon is away from the plaer
     var dif = Math.round(Math.abs((player.x - x) / 100)) +
-        Math.round(Math.abs((player.y - y) / 100));
+            Math.round(Math.abs((player.y - y) / 100));
 
-    if(dif < 1) {dif = 1}
-
-    //alert(dif);
+    if (dif < 1) {
+        dif = 1
+    }
+        //alert(dif);
     health -= dif;
 
+    if (health < 0) {
+        health = 0;
+    }
     //move the player to positon
     player.x = x;
     player.y = y;
-
 
     player.jumping = true;
     player.grounded = false;
@@ -139,17 +150,9 @@ function click(event)
     player.velY = 0;
 
     telaport.play();
-
 }
 
-    function update() {
-
-        //look to see if player is in level end position
-//      if () {
-//
-//      }
-
-        // check keys
+    function movement() {
         if (keys[38] || keys[87] || keys[32]) { // up arrow or w or space
             if (!player.jumping && player.grounded) {
                 player.jumping = true;
@@ -167,67 +170,77 @@ function click(event)
                 player.velX--;
             }
         }
-
         if (keys[82]) { // r
             restartLevel();
         }
 
         player.velX *= friction;
         player.velY += gravity;
+    }
 
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = "black";
-        ctx.beginPath();
+    function update() {
 
-        player.grounded = false;
-        for (var i = 0; i < boxes.length; i++) {
-            ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+        ctx.clearRect(0, 0, width, height); //clear all
 
-            var dir = colCheck(player, boxes[i]);
+        if (gameState == "start")
+        {
+            console.log("loading start screen");
+            StartBtn.draw();
+        }
+        else {
+            if (health <= 0) {
+                updateGameOver();
+            } else {
+                // check keys
+                movement();
 
-            if (dir === "l" || dir === "r") {
-                player.velX = 0;
-                player.jumping = false;
-            } else if (dir === "b") {
-                player.grounded = true;
-                player.jumping = false;
-            } else if (dir === "t") {
-                player.velY *= -1;
+                ctx.fillStyle = "black";
+                ctx.beginPath();
+
+                player.grounded = false;
+                for (var i = 0; i < boxes.length; i++) {
+                    ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+
+                    var dir = colCheck(player, boxes[i]);
+
+                    if (dir === "l" || dir === "r") {
+                        player.velX = 0;
+                        player.jumping = false;
+                    } else if (dir === "b") {
+                        player.grounded = true;
+                        player.jumping = false;
+                    } else if (dir === "t") {
+                        player.velY *= -1;
+                    }
+
+                }
+
+                if (player.grounded) {
+                    player.velY = 0;
+                }
+
+                player.x += player.velX;
+                player.y += player.velY;
+
+                ctx.fill();
+                ctx.fillStyle = "red";
+                ctx.fillRect(player.x, player.y, player.width, player.height);
+
+                //HP BAR
+                var percent = health / maxHealth;
+
+                ctx.fillStyle = "black";
+                ctx.fillRect(health_bar.x, health_bar.y, health_bar.width, health_bar.height);
+                ctx.fillStyle = "red";
+                ctx.fillRect(health_bar.x, health_bar.y, health_bar.width * percent, health_bar.height);
+
+                ctx.fillStyle = "Red";
+                ctx.font = "18px sans-serif";
+                ctx.fillText("Health: ", 20, 31);
+                ctx.fillText(health + "/" + maxHealth, 415, 25);
             }
-
         }
-
-        if(player.grounded){
-             player.velY = 0;
-        }
-
-        player.x += player.velX;
-        player.y += player.velY;
-
-        ctx.fill();
-        ctx.fillStyle = "red";
-        ctx.fillRect(player.x, player.y, player.width, player.height);
-
-        //HP BAR
-        var percent =  health / maxHealth;
-
-        if(percent);
-
-        ctx.fillStyle = "Red";
-        ctx.font = "18px sans-serif";
-        ctx.fillText("Life " +health+"/"+maxHealth+" = " + Math.round(percent * 100) +"%", 20, 20);
-
-        ctx.fillStyle = "black";
-        ctx.fillRect(health_bar.x, health_bar.y, health_bar.width, health_bar.height);
-
-        ctx.fillStyle = "red";
-        ctx.fillRect(health_bar.x, health_bar.y, health_bar.width * percent, health_bar.height);
-
-        if(health <= 0) {
-            requestAnimationFrame(updateGameOver);
-        } else {
-            requestAnimationFrame(update);
-        }
+        requestAnimationFrame(update);
     }
 
     function colCheck(shapeA, shapeB) {
@@ -266,7 +279,8 @@ function click(event)
     }
 
     function updateGameOver() {
-    // Restart Button object
+
+        gameState = "game over";
 
         var restartBtn = {
             w: 100,
@@ -291,14 +305,9 @@ function click(event)
         restartBtn.draw();
 
         ctx.fillStlye = "Black";
-        ctx.font = "20px Arial, sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        //ctx.fillText("Game Over - You scored "+points+" points!", canvas.width/2, canvas.height/2 + 25 );
+//        //ctx.fillText("Game Over - You scored "+points+" points!", canvas.width/2, canvas.height/2 + 25 );
         ctx.fillText("Game Over!", canvas.width/2, canvas.height/2 + 25 );
         ctx.fillText("You scored PLACEHOLDER points!", canvas.width/2, canvas.height/2 + 75 );
-
-        console.log("waiting for user");
 
 //        requestAnimationFrame(updateGameOver);
     }

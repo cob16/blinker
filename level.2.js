@@ -4,19 +4,25 @@ var boxes = [];
 boxes.push({
     x: 0,
     y: 0,
+    width: width,
+    height: 30
+});
+boxes.push({
+    x: 0,
+    y: 0,
     width: 10,
     height: height
 });
 boxes.push({
     x: 0,
-    y: height - 2,
+    y: height - 10,
     width: width,
     height: 10
 });
 boxes.push({
-    x: width - 10,
+    x: width -10,
     y: 0,
-    width: 50,
+    width: 10,
     height: height
 });
 
