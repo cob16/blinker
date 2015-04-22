@@ -25,6 +25,7 @@ boxes.push({
     width: 10,
     height: height
 });
+// dimensions
 
 boxes.push({
     x: 120,

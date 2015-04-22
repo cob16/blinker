@@ -67,8 +67,13 @@
        w: 100,
        h: 50,
        x: canvas.width/2 - 50,
-       y: canvas.height/2 - 50,
+       y: canvas.height/2 - 25,
        draw: function() {
+           ctx.fillStyle = "grey";
+           ctx.fillRect(0, 0, canvas.width, canvas.height);
+           ctx.fill();
+
+           ctx.fillStyle = "black";
            ctx.strokeStyle = "#000000";
            ctx.lineWidth = "2";
            ctx.strokeRect(this.x, this.y, this.w, this.h);
@@ -76,7 +81,7 @@
            ctx.textAlign = "center";
            ctx.textBaseline = "middle";
            ctx.fillStlye = "#000000";
-           ctx.fillText("Start", canvas.width/2, canvas.height/4 + 25 );
+           ctx.fillText("Start", canvas.width/2, canvas.height/2 );
        }
    };
 
@@ -188,6 +193,12 @@ function click(event)
             StartBtn.draw();
         }
         else {
+
+            ctx.fillStyle = "grey";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fill();
+
+
             if (health <= 0) {
                 updateGameOver();
             } else {
@@ -240,6 +251,7 @@ function click(event)
                 ctx.fillText(health + "/" + maxHealth, 415, 25);
             }
         }
+
         requestAnimationFrame(update);
     }
 
@@ -289,6 +301,7 @@ function click(event)
             y: canvas.height/2 - 50,
 
             draw: function() {
+                ctx.fillStyle = "black";
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = "2";
                 ctx.strokeRect(this.x, this.y, this.w, this.h);
@@ -298,7 +311,7 @@ function click(event)
                 ctx.textBaseline = "middle";
                 ctx.fillStlye = "#000000";
 
-                ctx.fillText("Restart", canvas.width/2, canvas.height/2 - 25 );
+                ctx.fillText("Restart", canvas.width/2, canvas.height/2 - 25);
             }
         };
 
