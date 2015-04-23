@@ -45,8 +45,8 @@
             grounded: false
         },
         level = {
-            current: 1,
-            endLevel: 2,
+            current: 0,
+            endLevel: 1,
             startX : 292,
             startY: 130,
 
@@ -112,10 +112,34 @@
 
         console.log("Loading Compete");
     }
+
     function nextLevel() {
         if (level.current < level.endLevel) {
+            updateLocalStorage();
             loadnewlevel("level." + ++level.current + ".js");
+            //todo save points to loal storage
             restartLevel();
+        }
+    }
+
+    function createLocalStorage() {
+        for (var i = 0; i <= level.endLevel; i++) { //make highscore table
+            localStorage.setItem("levelScore-" + i, 0);
+        }
+    }
+
+    function updateLocalStorage(i) {
+
+        if(localStorage.getItem("health") == null) {createLocalStorage();}
+
+//        if(typeof i == "undefined"){
+//            console.error("missing parameter when calling updateLocalStorage")
+//            return;
+//        }
+
+        var key = "levelScore-" + level.current;
+        if (localStorage.getItem(key) < health) {
+            localStorage.setItem(key, health);
         }
     }
 
@@ -124,6 +148,7 @@
 
         if (gameState == "start") {
             gameState = "playing";
+            //todo create high score if none exisits
             restartLevel();
             return;
         }
@@ -187,6 +212,11 @@
         if (keys[82]) { // r
             restartLevel();
         }
+
+        if (keys[75]) { // r
+            //todo debug key
+        }
+
 
         player.velX *= friction;
         player.velY += gravity;
@@ -259,7 +289,7 @@
                 ctx.fillText(health + "/" + maxHealth, 415, 25);
 
                 ctx.fillStyle = "white";
-                ctx.fillText("Level: " + 1, canvas.width-50, 25);
+                ctx.fillText("Level: " + level.current, canvas.width-50, 25);
             }
         }
 
@@ -368,8 +398,7 @@
 
 
     window.addEventListener("load", function () {
-        loadnewlevel("level.1.js");
-        //gameState = 'playing';
+        loadnewlevel("level.0.js");
         state();
     });
 

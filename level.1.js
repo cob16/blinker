@@ -41,7 +41,7 @@ boxes.push({
 });
 boxes.push({
     x: 220,
-    y: height - 20,
+    y: height - 40,
     width: 80,
     height: 80
 });
