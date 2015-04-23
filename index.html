@@ -5,7 +5,11 @@
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
+<canvas id="canvas" style='
+                        margin-left: auto;
+                        margin-right: auto;
+                        display: block;
+                    '>Your is old as hell, get a newer on so you can play the game!.</canvas>
 
 <script>
 
@@ -164,8 +168,8 @@
                 (canvas.height / bounding_box.height);
 
             //get a number that inceces the further the mose positon is away from the plaer
-        var dif = Math.round(Math.abs((player.x - x) / 100)) +
-                Math.round(Math.abs((player.y - y) / 100));
+        var dif = Math.round(Math.abs((player.x - x) / 10)) +
+                Math.round(Math.abs((player.y - y) / 10));
 
         if (dif < 1) {
             dif = 1
@@ -227,8 +231,8 @@
 
         if (gameState == "start")
         {
-            console.log("loading start screen");
             StartBtn.draw();
+            console.log("Waiting to start");
         }
         else {
 
@@ -274,6 +278,14 @@
                 ctx.fill();
                 ctx.fillStyle = "red";
                 ctx.fillRect(player.x, player.y, player.width, player.height);
+
+                ctx.strokeStyle = "pink"; //red
+                ctx.lineWidth   = 1;
+                ctx.beginPath();
+                //todo fix the circl to show exsact distae allowed + tie it in with real numbers
+                ctx.arc(player.x + (player.width/2), player.y + (player.height/2), health * 10, 0, 2 * Math.PI);
+                ctx.stroke();
+
 
                 //HP BAR
                 var percent = health / maxHealth;
