@@ -5,7 +5,7 @@ boxes.push({
     x: 0,
     y: 0,
     width: width,
-    height: 30
+    height: 40
 });
 boxes.push({
     x: 0,
@@ -15,9 +15,9 @@ boxes.push({
 });
 boxes.push({
     x: 0,
-    y: height - 10,
+    y: height - 20,
     width: width,
-    height: 10
+    height: 20
 });
 boxes.push({
     x: width -10,
@@ -41,7 +41,7 @@ boxes.push({
 });
 boxes.push({
     x: 220,
-    y: height - 20,
+    y: height - 40,
     width: 80,
     height: 80
 });

@@ -1,50 +1,47 @@
-//start and end positions
-level = {
-    level: 1,
-    startX : width / 2,
-    startY: height - 15,
-    endX: 0,
-    endY: 0
-}
-
-
 var boxes = [];
 
 // dimensions
 boxes.push({
     x: 0,
     y: 0,
-    width: 40,
+    width: width,
+    height: 40
+});
+boxes.push({
+    x: 0,
+    y: 0,
+    width: 10,
     height: height
 });
 boxes.push({
     x: 0,
-    y: height - 2,
+    y: height - 20,
     width: width,
-    height: 50
+    height: 20
 });
 boxes.push({
-    x: width - 10,
+    x: width -10,
     y: 0,
-    width: 50,
+    width: 10,
     height: height
 });
+// dimensions
 
 boxes.push({
     x: 120,
-    y: 10,
+    y: height - 20,
     width: 80,
     height: 80
 });
 boxes.push({
     x: 170,
-    y: 50,
+    y: height - 30,
     width: 80,
     height: 80
 });
 boxes.push({
     x: 220,
-    y: 100,
+    y: height - 20,
     width: 80,
     height: 80
 });
