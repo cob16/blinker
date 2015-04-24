@@ -78,7 +78,7 @@
         w: 100,
         h: 50,
         x: canvas.width/2 - 50,
-        y: canvas.height/2 - 25,
+        y: canvas.height - canvas.height/4,
         draw: function() {
             ctx.fillStyle = "whitesmoke";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -91,7 +91,7 @@
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillStlye = "#000000";
-            ctx.fillText("Start", canvas.width/2, canvas.height/2 );
+            ctx.fillText("Start", StartBtn.x + (StartBtn.w/2), StartBtn.y + (StartBtn.h/2));
         }
     };
 
@@ -223,7 +223,6 @@
 
         if (keys[75]) { // k
             //todo debug key
-            gameComplete()
         }
 
 
