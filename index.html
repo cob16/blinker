@@ -108,13 +108,10 @@
     }
 
     function loadnewlevel(filename) {
-
         console.log("loading:" + filename);
-
         //remove old level
         delete boxes;
         delete levelInfo;
-
         //load the new level
         var js = document.createElement('script');
         js.type = "text/javascript";
@@ -130,9 +127,8 @@
             loadnewlevel("level." + ++levelInfo.current + ".js");
         } else {
             console.log("game complete");
-            updateGameOver();
+            gameComplete();
         }
-
     }
 
     function createLocalStorage() {
@@ -142,7 +138,6 @@
     }
 
     function updateLocalStorage() {
-
         if(localStorage.getItem("health") == null) {createLocalStorage();} //make the local storage if not present
 
         var key = "levelScore-" + levelInfo.current;
@@ -153,14 +148,13 @@
 
     function click(event)
     {
-
         if (gameState == "start"  || gameState == "game over") {
             gameState = "playing";
             restartLevel();
         }
-        else if (gameState == "complete") {
+        else if (gameState == "game complete") {
             console.error("game complete !!");
-            delete requestAnimationFrame;
+            location.reload(false); //restart the game by reloading the page
         } else {
 
             //get mouse poision
@@ -227,8 +221,9 @@
             restartLevel();
         }
 
-        if (keys[75]) { // r
+        if (keys[75]) { // k
             //todo debug key
+            gameComplete()
         }
 
 
@@ -237,18 +232,25 @@
     }
 
     function update() {
-
         ctx.clearRect(0, 0, width, height); //clear all
 
-        if (gameState == "nextlevel"){ //called from last frame so that the new level start cordnates
+        //Backround
+        ctx.fillStyle = "whitesmoke";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fill();
+
+        if (gameState == "nextlevel")
+        { //called from last frame so that we use the new level start coordinates
             restartLevel();
             gameState = "playing";
         }
 
-        if (gameState == "start")
-        {
+        if (gameState == "start") {
             StartBtn.draw();
             console.log("Waiting to start");
+        }
+        else if (gameState == "game complete") {
+            gameComplete();
         }
         else if (//At finish line
             player.x > levelInfo.endX && player.x < (levelInfo.endX + levelInfo.endWidth) &&
@@ -256,13 +258,8 @@
         ){
             gameState = "nextlevel";
             nextLevel();
-
         }
         else {
-
-            ctx.fillStyle = "whitesmoke";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fill();
 
             if (health <= 0) {
                 updateGameOver();
@@ -405,6 +402,44 @@
         ctx.fillText("Game Over!", canvas.width/2, canvas.height/2 + 25 );
         ctx.fillText("You scored PLACEHOLDER points!", canvas.width/2, canvas.height/2 + 75 );
 
+    }
+
+    function gameComplete() {
+
+        gameState = "game complete";
+
+        var finishScreen = {
+            w: 150,
+            h: 50,
+            x: canvas.width/2 - 75,
+            y: canvas.height/2 + 50,
+
+            draw: function() {
+                ctx.fillStyle = "grey";
+                ctx.beginPath();
+                ctx.rect(finishScreen.x, finishScreen.y, finishScreen.w, finishScreen.h);
+                ctx.fill();
+
+                ctx.fillStyle = "black";
+
+                ctx.strokeStyle = "#000000";
+                ctx.lineWidth = "2";
+                ctx.strokeRect(this.x, this.y, this.w, this.h);
+
+                ctx.font = "18px Arial, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStlye = "#000000";
+
+                ctx.fillText("Back To Menu", finishScreen.x + finishScreen.w/2, finishScreen.y + finishScreen.h/2 );
+            }
+        };
+        finishScreen.draw();
+
+        ctx.fillStlye = "Black";
+        ctx.font = "30px Arial, sans-serif";
+        ctx.fillText("Congratulations! ", canvas.width/2, finishScreen.x - 60);
+        ctx.fillText("Your total score was PLACEHOLDER points.", canvas.width/2, finishScreen.x - 10);
     }
 
     document.body.addEventListener("keydown", function (e) {
