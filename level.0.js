@@ -29,21 +29,21 @@ boxes.push({
 
 boxes.push({
     x: 120,
-    y: height - 20,
+    y: height - 80,
     width: 80,
     height: 80
 });
 boxes.push({
-    x: 170,
-    y: height - 30,
+    x: width - width/3,
+    y: height - height/3,
     width: 80,
     height: 80
 });
 boxes.push({
-    x: 220,
-    y: height - 20,
+    x: width - width/4,
+    y: height/2,
     width: 80,
-    height: 80
+    height: height/2
 });
 boxes.push({
     x: 270,
