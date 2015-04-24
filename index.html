@@ -23,6 +23,8 @@
     var health = 50;
     var maxHealth = 50;
 
+    var teleRadus = 5;
+
     var health_bar = {
         x: 80,
         y: 14,
@@ -30,7 +32,9 @@
         height: 20
     };
 
-   var telaport = new Audio('assests/teleporter_send.wav');
+    var teleport = new Audio('assests/teleport.mp3');
+    var gameOver = new Audio('assests/gameover.mp3');
+    var jump     = new Audio('assests/jump.mp3');
 
    var canvas = document.getElementById("canvas"),
         ctx = canvas.getContext("2d"),
@@ -120,7 +124,7 @@
         if (level.current < level.endLevel) {
             updateLocalStorage();
             loadnewlevel("level." + ++level.current + ".js");
-            //todo save points to loal storage
+            //todo save points to local storage
             restartLevel();
         }
     }
@@ -168,8 +172,18 @@
                 (canvas.height / bounding_box.height);
 
             //get a number that inceces the further the mose positon is away from the plaer
-        var dif = Math.round(Math.abs((player.x - x) / 10)) +
-                Math.round(Math.abs((player.y - y) / 10));
+
+
+//            var difx = player.x - x;
+//            console.log("difx "+ difx);
+//
+//            var dify = player.y - y;
+//            console.log("dify "+ dify);
+//
+//        var dif = Math.round(Math.abs(Math.sqrt(x^2 + y^2)) * 2);
+        var dif = Math.sqrt((x-player.x)*(x-player.x) + (y-player.y)*(y-player.y) );
+        dif = Math.round(dif / teleRadus);
+        console.log("dif "+ dif);
 
         if (dif < 1) {
             dif = 1
@@ -191,7 +205,8 @@
         player.velX = 0;
         player.velY = 0;
 
-        telaport.play();
+        if(health < 1) gameOver.play();
+        else teleport.play();
     }
 
     function movement() {
@@ -200,6 +215,7 @@
                 player.jumping = true;
                 player.grounded = false;
                 player.velY = -player.speed * 2;
+                jump.play();
             }
         }
         if (keys[39] || keys[68]) { // right arrow
@@ -282,8 +298,7 @@
                 ctx.strokeStyle = "pink"; //red
                 ctx.lineWidth   = 1;
                 ctx.beginPath();
-                //todo fix the circl to show exsact distae allowed + tie it in with real numbers
-                ctx.arc(player.x + (player.width/2), player.y + (player.height/2), health * 10, 0, 2 * Math.PI);
+                ctx.arc(player.x + (player.width/2), player.y + (player.height/2), health * teleRadus, 0, 2 * Math.PI);
                 ctx.stroke();
 
 
@@ -374,7 +389,6 @@
         ctx.fillText("Game Over!", canvas.width/2, canvas.height/2 + 25 );
         ctx.fillText("You scored PLACEHOLDER points!", canvas.width/2, canvas.height/2 + 75 );
 
-//        requestAnimationFrame(updateGameOver);
     }
 
     function state() {
