@@ -18,6 +18,8 @@
         window.requestAnimationFrame = requestAnimationFrame;
     })();
 
+    var endLevel = 1;
+
     var gameState = 'start';
 
     var health = 50;
@@ -36,7 +38,7 @@
     var gameOver = new Audio('assests/gameover.mp3');
     var jump     = new Audio('assests/jump.mp3');
 
-   var canvas = document.getElementById("canvas"),
+    var canvas = document.getElementById("canvas"),
         ctx = canvas.getContext("2d"),
         width = 900,
         height = 700,
@@ -51,17 +53,6 @@
             jumping: false,
             grounded: false
         },
-        level = {
-              current: 0,
-             endLevel: 1,
-              startX : 292,
-               startY: 130,
-                 endX: 0,
-                 endY: 0,
-             endWidth: 100,
-            endHeight: 50
-        }
-
         keys = [],
         friction = 0.8,
         gravity = 0.3;
@@ -69,35 +60,46 @@
         canvas.width = width;
         canvas.height = height;
 
-        var boxes = [];
+    var levelInfo = {
+        current: 0,
+        endLevel: 1,
+        startX: 0,
+        startY: 0,
+        endX: 0,
+        endY: 0,
+        endWidth: 100,
+        endHeight: 50
 
-   var StartBtn = {
-       w: 100,
-       h: 50,
-       x: canvas.width/2 - 50,
-       y: canvas.height/2 - 25,
-       draw: function() {
-           ctx.fillStyle = "whitesmoke";
-           ctx.fillRect(0, 0, canvas.width, canvas.height);
-           ctx.fill();
+    }
 
-           ctx.fillStyle = "black";
-           ctx.strokeStyle = "#000000";
-           ctx.lineWidth = "2";
-           ctx.strokeRect(this.x, this.y, this.w, this.h);
-           ctx.font = "18px Arial, sans-serif";
-           ctx.textAlign = "center";
-           ctx.textBaseline = "middle";
-           ctx.fillStlye = "#000000";
-           ctx.fillText("Start", canvas.width/2, canvas.height/2 );
-       }
-   };
+    var boxes = [];
+
+    var StartBtn = {
+        w: 100,
+        h: 50,
+        x: canvas.width/2 - 50,
+        y: canvas.height/2 - 25,
+        draw: function() {
+            ctx.fillStyle = "whitesmoke";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fill();
+            ctx.fillStyle = "black";
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = "2";
+            ctx.strokeRect(this.x, this.y, this.w, this.h);
+            ctx.font = "18px Arial, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStlye = "#000000";
+            ctx.fillText("Start", canvas.width/2, canvas.height/2 );
+        }
+    };
 
     function restartLevel() {
         //console.log("Level Restarted");
         health = maxHealth;
-        player.x = level.startX;
-        player.y = level.startY;
+        player.x = levelInfo.startX;
+        player.y = levelInfo.startY;
         player.velX = 0;
         player.velY = 0;
         player.jumping = false;
@@ -111,40 +113,39 @@
 
         //remove old level
         delete boxes;
+        delete levelInfo;
 
         //load the new level
         var js = document.createElement('script');
         js.type = "text/javascript";
         js.src = filename;
         document.body.appendChild(js);
-
         console.log("Loading Compete");
+        restartLevel();
     }
 
     function nextLevel() {
-        if (level.current < level.endLevel) {
+        if (parseInt(levelInfo.current,10) < parseInt(endLevel,10)) {
             updateLocalStorage();
-            loadnewlevel("level." + ++level.current + ".js");
-            restartLevel();
+            loadnewlevel("level." + ++levelInfo.current + ".js");
+        } else {
+            console.log("game complete");
+            updateGameOver();
         }
+
     }
 
     function createLocalStorage() {
-        for (var i = 0; i <= level.endLevel; i++) { //make highscore table
+        for (var i = 0; i <= endLevel; i++) { //make highscore table
             localStorage.setItem("levelScore-" + i, 0);
         }
     }
 
-    function updateLocalStorage(i) {
+    function updateLocalStorage() {
 
-        if(localStorage.getItem("health") == null) {createLocalStorage();}
+        if(localStorage.getItem("health") == null) {createLocalStorage();} //make the local storage if not present
 
-//        if(typeof i == "undefined"){
-//            console.error("missing parameter when calling updateLocalStorage")
-//            return;
-//        }
-
-        var key = "levelScore-" + level.current;
+        var key = "levelScore-" + levelInfo.current;
         if (localStorage.getItem(key) < health) {
             localStorage.setItem(key, health);
         }
@@ -153,54 +154,53 @@
     function click(event)
     {
 
-        if (gameState == "start") {
+        if (gameState == "start"  || gameState == "game over") {
             gameState = "playing";
             restartLevel();
-            return;
         }
-        if (gameState == "game over") {
-            gameState = "playing";
-            restartLevel();
-            return;
-        }
-
-        //get mouse poision
-        var bounding_box = canvas.getBoundingClientRect();
-        var x = (event.clientX - bounding_box.left) *
-                (canvas.width / bounding_box.width);
-        var y = (event.clientY - bounding_box.top) *
-                (canvas.height / bounding_box.height);
-        //get a number that inceces the further the mose positon is away from the plaer
-        var dif = Math.sqrt((x-player.x)*(x-player.x) + (y-player.y)*(y-player.y) );
-        //devide it by our magic number and round for eazy ux
-        dif = Math.round(dif / teleRadus);
-
-        console.log("dif "+ dif);
-
-        if (dif < 1) {
-            dif = 1
-        }
-            //alert(dif);
-        health -= dif;
-
-        if (health < 0) {
-            health = 0;
-        }
-        //move the player to positon
-        player.x = x;
-        player.y = y;
-
-        console.log("telaport(" + x + "," + y + ")" );
-
-        player.jumping = true;
-        player.grounded = false;
-        player.velX = 0;
-        player.velY = 0;
-
-        if(health < 1) {
-            gameOver.play();
+        else if (gameState == "complete") {
+            console.error("game complete !!");
+            delete requestAnimationFrame;
         } else {
-            teleport.play();
+
+            //get mouse poision
+            var bounding_box = canvas.getBoundingClientRect();
+            var x = (event.clientX - bounding_box.left) *
+                    (canvas.width / bounding_box.width);
+            var y = (event.clientY - bounding_box.top) *
+                    (canvas.height / bounding_box.height);
+            //get a number that inceces the further the mose positon is away from the plaer
+            var dif = Math.sqrt((x - player.x) * (x - player.x) + (y - player.y) * (y - player.y));
+            //devide it by our magic number and round for eazy ux
+            dif = Math.round(dif / teleRadus);
+
+            console.log("dif " + dif);
+
+            if (dif < 1) {
+                dif = 1
+            }
+            //alert(dif);
+            health -= dif;
+
+            if (health < 0) {
+                health = 0;
+            }
+            //move the player to positon
+            player.x = x;
+            player.y = y;
+
+            console.log("telaport(" + x + "," + y + ")");
+
+            player.jumping = true;
+            player.grounded = false;
+            player.velX = 0;
+            player.velY = 0;
+
+            if (health < 1) {
+                gameOver.play();
+            } else {
+                teleport.play();
+            }
         }
     }
 
@@ -240,10 +240,23 @@
 
         ctx.clearRect(0, 0, width, height); //clear all
 
+        if (gameState == "nextlevel"){ //called from last frame so that the new level start cordnates
+            restartLevel();
+            gameState = "playing";
+        }
+
         if (gameState == "start")
         {
             StartBtn.draw();
             console.log("Waiting to start");
+        }
+        else if (//At finish line
+            player.x > levelInfo.endX && player.x < (levelInfo.endX + levelInfo.endWidth) &&
+            player.y > levelInfo.endY && player.y < (levelInfo.endY + levelInfo.endHeight)
+        ){
+            gameState = "nextlevel";
+            nextLevel();
+
         }
         else {
 
@@ -260,7 +273,7 @@
                 //level end
                 ctx.beginPath();
                 ctx.fillStyle = "red";
-                ctx.rect(level.endX, level.endY, level.endWidth, level.endHeight);
+                ctx.rect(levelInfo.endX, levelInfo.endY, levelInfo.endWidth, levelInfo.endHeight);
                 ctx.fill();
 
                 //black boxes
@@ -317,7 +330,7 @@
                 ctx.fillText(health + "/" + maxHealth, 415, 25);
 
                 ctx.fillStyle = "white";
-                ctx.fillText("Level: " + level.current, canvas.width-50, 25);
+                ctx.fillText("Level: " + levelInfo.current, canvas.width-50, 25);
 
             }
         }
@@ -394,28 +407,6 @@
 
     }
 
-    function state() {
-
-        update();
-//
-//    while (true) {
-//
-//        if (update() == "game over") {
-//            console.log("game over");
-//            gameState = state;
-//            updateGameOver();
-//        }
-//
-//        console.log("IT FUCKING BROKEN!");
-//
-////       if (update().isEqual("game over")) {
-////
-////       } else if(update().isEqual("next level"){
-////
-////       }
-//    }
-    }
-
     document.body.addEventListener("keydown", function (e) {
         keys[e.keyCode] = true;
     });
@@ -427,7 +418,7 @@
 
     window.addEventListener("load", function () {
         loadnewlevel("level.0.js");
-        state();
+        update();
     });
 
     canvas.addEventListener("mousedown", click, false);
