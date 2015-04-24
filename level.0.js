@@ -1,3 +1,14 @@
+
+level = {
+    current: 0,
+    startX : 292,
+    startY: 130,
+    endX: width - 145,
+    endY: height - 60,
+    endWidth: 135,
+    endHeight: 60
+}
+
 var boxes = [];
 
 // dimensions

@@ -52,13 +52,14 @@
             grounded: false
         },
         level = {
-            current: 0,
-            endLevel: 1,
-            startX : 292,
-            startY: 130,
-
-            endX: 0,
-            endY: 0
+              current: 0,
+             endLevel: 1,
+              startX : 292,
+               startY: 130,
+                 endX: 0,
+                 endY: 0,
+             endWidth: 100,
+            endHeight: 50
         }
 
         keys = [],
@@ -124,7 +125,6 @@
         if (level.current < level.endLevel) {
             updateLocalStorage();
             loadnewlevel("level." + ++level.current + ".js");
-            //todo save points to local storage
             restartLevel();
         }
     }
@@ -155,7 +155,6 @@
 
         if (gameState == "start") {
             gameState = "playing";
-            //todo create high score if none exisits
             restartLevel();
             return;
         }
@@ -165,24 +164,17 @@
             return;
         }
 
+        //get mouse poision
         var bounding_box = canvas.getBoundingClientRect();
         var x = (event.clientX - bounding_box.left) *
                 (canvas.width / bounding_box.width);
         var y = (event.clientY - bounding_box.top) *
                 (canvas.height / bounding_box.height);
-
-            //get a number that inceces the further the mose positon is away from the plaer
-
-
-//            var difx = player.x - x;
-//            console.log("difx "+ difx);
-//
-//            var dify = player.y - y;
-//            console.log("dify "+ dify);
-//
-//        var dif = Math.round(Math.abs(Math.sqrt(x^2 + y^2)) * 2);
+        //get a number that inceces the further the mose positon is away from the plaer
         var dif = Math.sqrt((x-player.x)*(x-player.x) + (y-player.y)*(y-player.y) );
+        //devide it by our magic number and round for eazy ux
         dif = Math.round(dif / teleRadus);
+
         console.log("dif "+ dif);
 
         if (dif < 1) {
@@ -259,17 +251,24 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fill();
 
-
             if (health <= 0) {
                 updateGameOver();
             } else {
                 // check keys
                 movement();
 
-                ctx.fillStyle = "black";
+                //level end
                 ctx.beginPath();
+                ctx.fillStyle = "red";
+                ctx.rect(level.endX, level.endY, level.endWidth, level.endHeight);
+                ctx.fill();
+
+                //black boxes
+                ctx.beginPath();
+                ctx.fillStyle = "black";
 
                 player.grounded = false;
+
                 for (var i = 0; i < boxes.length; i++) {
                     ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
 
@@ -284,22 +283,22 @@
                     } else if (dir === "t") {
                         player.velY *= -1;
                     }
-
                 }
-
                 if (player.grounded) {
                     player.velY = 0;
                 }
-
                 player.x += player.velX;
                 player.y += player.velY;
 
+
                 ctx.fill();
+
                 ctx.fillStyle = "red";
                 ctx.fillRect(player.x, player.y, player.width, player.height);
 
-                ctx.strokeStyle = "pink"; //red
-                ctx.lineWidth   = 1;
+                ctx.fillStyle = "whitesmoke";
+                ctx.strokeStyle = "red"; //red
+                ctx.lineWidth   = 0.3;
                 ctx.beginPath();
                 ctx.arc(player.x + (player.width/2), player.y + (player.height/2), health * teleRadus, 0, 2 * Math.PI);
                 ctx.stroke();
@@ -319,6 +318,7 @@
 
                 ctx.fillStyle = "white";
                 ctx.fillText("Level: " + level.current, canvas.width-50, 25);
+
             }
         }
 
