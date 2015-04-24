@@ -205,8 +205,11 @@
         player.velX = 0;
         player.velY = 0;
 
-        if(health < 1) gameOver.play();
-        else teleport.play();
+        if(health < 1) {
+            gameOver.play();
+        } else {
+            teleport.play();
+        }
     }
 
     function movement() {
