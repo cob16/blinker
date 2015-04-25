@@ -69,7 +69,6 @@
         endY: 0,
         endWidth: 100,
         endHeight: 50
-
     }
 
     var boxes = [];
@@ -141,7 +140,7 @@
         if(localStorage.getItem("levelScore-0") == null) {createLocalStorage();} //make the local storage if not present
 
         var key = "levelScore-" + levelInfo.current;
-        if (localStorage.getItem(key) < health) {
+        if (parseInt(localStorage.getItem(key), 10) < health) {
             localStorage.setItem(key, health);
         }
         console.log("total score" + getTotalscore());
@@ -154,9 +153,6 @@
         }
         return o;
     }
-
-    //todo add a toal socore function for PLACholders
-
 
     function click(event)
     {
