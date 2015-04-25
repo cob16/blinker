@@ -74,7 +74,7 @@
 
     var boxes = [];
 
-    var StartBtn = {
+    var StartBtn = { //todo add tourtoal text
         w: 100,
         h: 50,
         x: canvas.width/2 - 50,
@@ -122,8 +122,8 @@
     }
 
     function nextLevel() {
+        updateLocalStorage();
         if (parseInt(levelInfo.current,10) < parseInt(endLevel,10)) {
-            updateLocalStorage();
             loadnewlevel("level." + ++levelInfo.current + ".js");
         } else {
             console.log("game complete");
@@ -137,14 +137,19 @@
         }
     }
 
-    function updateLocalStorage() {
-        if(localStorage.getItem("health") == null) {createLocalStorage();} //make the local storage if not present
+
+    function updateLocalStorage() { 
+
+        if(localStorage.getItem("levelScore-0") == null) {createLocalStorage();} //make the local storage if not present
 
         var key = "levelScore-" + levelInfo.current;
         if (localStorage.getItem(key) < health) {
             localStorage.setItem(key, health);
         }
     }
+
+    //todo add a toal socore function for PLACholders
+
 
     function click(event)
     {
