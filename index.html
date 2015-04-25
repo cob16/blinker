@@ -137,15 +137,22 @@
         }
     }
 
-
-    function updateLocalStorage() { 
-
+    function updateLocalStorage() {
         if(localStorage.getItem("levelScore-0") == null) {createLocalStorage();} //make the local storage if not present
 
         var key = "levelScore-" + levelInfo.current;
         if (localStorage.getItem(key) < health) {
             localStorage.setItem(key, health);
         }
+        console.log("total score" + getTotalscore());
+    }
+
+    function getTotalscore() {
+        var o = 0;
+        for (var i = 0; i <= endLevel; i++) { //make highscore table
+            o += parseInt(localStorage.getItem("levelScore-" + i), 10);
+        }
+        return o;
     }
 
     //todo add a toal socore function for PLACholders
@@ -404,7 +411,7 @@
         ctx.fillStlye = "Black";
 //        //ctx.fillText("Game Over - You scored "+points+" points!", canvas.width/2, canvas.height/2 + 25 );
         ctx.fillText("Game Over!", canvas.width/2, canvas.height/2 + 25 );
-        ctx.fillText("You scored PLACEHOLDER points!", canvas.width/2, canvas.height/2 + 75 );
+        ctx.fillText("You scored " + getTotalscore() + " points!", canvas.width/2, canvas.height/2 + 75 );
 
     }
 
@@ -443,7 +450,7 @@
         ctx.fillStlye = "Black";
         ctx.font = "30px Arial, sans-serif";
         ctx.fillText("Congratulations! ", canvas.width/2, finishScreen.x - 60);
-        ctx.fillText("Your total score was PLACEHOLDER points.", canvas.width/2, finishScreen.x - 10);
+        ctx.fillText("Your total score was " + getTotalscore() + " points.", canvas.width/2, finishScreen.x - 10);
     }
 
     document.body.addEventListener("keydown", function (e) {
