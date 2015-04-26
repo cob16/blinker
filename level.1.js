@@ -1,13 +1,3 @@
-
-    var levelInfo = {
-        current: 1,
-        startX: width/4 - 5,
-        startY: height/2 - 100,
-        endX: width-100,
-        endY: height/2 -150,
-        endWidth: 100,
-        endHeight: 150
-    };
     var boxes = [];
 
     var messages = [];
@@ -53,3 +43,13 @@
         width: 500,
         height: 20
     });
+
+    var levelInfo = {
+        current: 1,
+        startX: width/4 - 5,
+        startY: height/2 - 100,
+        endX: width-100,
+        endY: height/2 -150,
+        endWidth: 100,
+        endHeight: 150
+    };

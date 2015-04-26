@@ -24,10 +24,8 @@
     var endLevel = 3;
 
     var gameState = 'start';
-
     var health = 50;
     var maxHealth = 50;
-
     var teleRadus = 5;
 
     var health_bar = {
@@ -78,7 +76,7 @@
     var boxes = [];
     var messages = [];
 
-    var StartBtn = { //todo add tourtoal text
+    var StartBtn = {
         w: 100,
         h: 50,
         x: canvas.width/2 - 50,
@@ -88,7 +86,6 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fill();
 
-            //
             ctx.beginPath();
             ctx.fillStyle = "black";
             ctx.rect(width/4 - 110, height/4 - 100, width/2 - 120, 200);
@@ -97,7 +94,6 @@
             ctx.fillStyle = "red";
             ctx.rect(width/2 - 10, height/4 - 100, width/4 + 95, 200);
             ctx.fill();
-            //
 
             ctx.fillStyle = "white";
             ctx.font = "180px Trebuchet MS, Helvetica, sans-serif";
@@ -284,10 +280,8 @@
         }
 
         if (keys[75]) { // k
-            gameComplete();
-            //todo debug key
+            //todo remove debug key
         }
-
 
         player.velX *= friction;
         player.velY += gravity;
@@ -463,10 +457,8 @@
         restartBtn.draw();
 
         ctx.fillStlye = "Black";
-//        //ctx.fillText("Game Over - You scored "+points+" points!", canvas.width/2, canvas.height/2 + 25 );
         ctx.fillText("Game Over!", canvas.width/2, canvas.height/2 + 25 );
         ctx.fillText("You scored " + getTotalscore() + " points!", canvas.width/2, canvas.height/2 + 75 );
-
     }
 
     function gameComplete() {
@@ -512,7 +504,6 @@
             ctx.fillStyle = "Red";
             ctx.fillText("NEW RECORD!", width/2 , finishScreen.y - 25);
         }
-        //todo update
     }
 
     document.body.addEventListener("keydown", function (e) {
@@ -522,7 +513,6 @@
     document.body.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
     });
-
 
     window.addEventListener("load", function () {
         loadnewlevel("level.0.js");

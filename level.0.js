@@ -1,15 +1,4 @@
 
-
-    var levelInfo = {
-        current: 0,
-        startX: 220,
-        startY: 200,
-        endX: 600,
-        endY: height/2 -150,
-        endWidth: 100,
-        endHeight: 140
-    };
-
     var messages = [];
     messages.push('You are the small red square! Reach the big red square!');
     messages.push('WASD keys move, Spacebar lets you Jump. Press R to restart the level!');
@@ -54,3 +43,13 @@
         width: 40,
         height: 40
     });
+
+    var levelInfo = {
+        current: 0,
+        startX: 220,
+        startY: 200,
+        endX: 600,
+        endY: height/2 -150,
+        endWidth: 100,
+        endHeight: 140
+    };
