@@ -154,6 +154,13 @@
         return o;
     }
 
+    function getCurrentLevelBest() {
+        var o = parseInt(localStorage.getItem("levelScore-" + levelInfo.current), 10);
+        if (localStorage.getItem("levelScore-0") == null || parseInt(o) == 0 || o == undefined ) {
+            return "None";
+        } else return o;
+    }
+
     function click(event)
     {
         if (gameState == "start"  || gameState == "game over") {
@@ -332,6 +339,9 @@
                 ctx.fillStyle = "Red";
                 ctx.fillText("Health: ", 40, 25);
                 ctx.fillText(health + "/" + maxHealth, 415, 25);
+
+                ctx.fillStyle = "white";//todo best score
+                ctx.fillText("Best score: " + getCurrentLevelBest(), canvas.width-300, 25);
 
                 ctx.fillStyle = "white";
                 ctx.fillText("Level: " + levelInfo.current, canvas.width-50, 25);
