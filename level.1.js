@@ -11,7 +11,7 @@
     var boxes = [];
 
     var messages = [];
-    messages.push('Clicking to teleport where you want to go! Teleporting costs health the further you travel.');
+    messages.push('Click to teleport where you want to go! Teleporting costs health the further you travel.');
     messages.push('The red circle shows how far you can travel with your remaining health.');
 
     // dimensions
