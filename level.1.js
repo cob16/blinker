@@ -1,18 +1,18 @@
 
     var levelInfo = {
         current: 1,
-        startX: width/2,
-        startY: height/2 - 50,
-        endX: 600,
+        startX: width/4 - 5,
+        startY: height/2 - 100,
+        endX: width-100,
         endY: height/2 -150,
         endWidth: 100,
-        endHeight: 140
+        endHeight: 150
     };
     var boxes = [];
 
     var messages = [];
-    messages.push('You can teleport by clicking the destination. Teleporting costs health the further you travel.');
-    messages.push('The red circle shows how far you can travel with your current health');
+    messages.push('You can teleport just by clicking where you want to go! Teleporting costs health the further you travel.');
+    messages.push('The red circle shows how far you can travel with your remaining health.');
 
     // dimensions
     boxes.push({
@@ -42,8 +42,14 @@
     // end dimensions
 
     boxes.push({
-        x: width/2 - 20,
-        y: height/2 - 20 ,
+        x: width/4 - 20,
+        y: height - height/4 - 60,
         width: 40,
-        height: 40
+        height: 20
+    });
+    boxes.push({
+        x: width/2 - 60,
+        y: height/2,
+        width: 500,
+        height: 20
     });

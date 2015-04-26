@@ -12,7 +12,7 @@
 
     var messages = [];
     messages.push('You are the small red square! Reach the big red square!');
-    messages.push('Press WASD/Space to move. Press R to restart the level!');
+    messages.push('WASD keys move, Spacebar lets you Jump. Press R to restart the level!');
 
     var boxes = [];
     // dimensions

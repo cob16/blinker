@@ -83,15 +83,37 @@
             ctx.fillStyle = "whitesmoke";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fill();
+
+            //
+            ctx.beginPath();
+            ctx.fillStyle = "black";
+            ctx.rect(width/4 - 110, height/4 - 100, width/2 - 120, 200);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.fillStyle = "red";
+            ctx.rect(width/2 - 10, height/4 - 100, width/4 + 95, 200);
+            ctx.fill();
+            //
+
+            ctx.fillStyle = "white";
+            ctx.font = "180px Trebuchet MS, Helvetica, sans-serif";
+            ctx.fillText("Blinker.", width / 2, height / 4);
+
             ctx.fillStyle = "black";
             ctx.strokeStyle = "#000000";
             ctx.lineWidth = "2";
             ctx.strokeRect(this.x, this.y, this.w, this.h);
-            ctx.font = "18px Arial, sans-serif";
+            ctx.font =  "18px Arial, sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillStlye = "#000000";
             ctx.fillText("Start", StartBtn.x + (StartBtn.w/2), StartBtn.y + (StartBtn.h/2));
+
+            ctx.fillStyle = "black";
+            ctx.fillText("To start click the bellow button and follow the onscreen text"
+                ,width / 2, height - height / 3);
+
+
         }
     };
 
@@ -476,7 +498,7 @@
 
 
     window.addEventListener("load", function () {
-        loadnewlevel("level.1.js");
+        loadnewlevel("level.0.js");
         update();
     });
 
