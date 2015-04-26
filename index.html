@@ -37,6 +37,7 @@
     var teleport = new Audio('assests/teleport.mp3');
     var gameOver = new Audio('assests/gameover.mp3');
     var jump     = new Audio('assests/jump.mp3');
+    var start    = new Audio('assests/start.wav');
 
     var canvas = document.getElementById("canvas"),
         ctx = canvas.getContext("2d"),
@@ -146,6 +147,7 @@
         updateLocalStorage();
         if (parseInt(levelInfo.current,10) < parseInt(endLevel,10)) {
             loadnewlevel("level." + ++levelInfo.current + ".js");
+            start.play();
         } else {
             console.log("game complete");
             gameComplete();
