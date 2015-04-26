@@ -2,16 +2,19 @@
 
     var levelInfo = {
         current: 0,
-        startX: 292,
-        startY: 130,
-        endX: width - 145,
-        endY: height - 60,
-        endWidth: 135,
-        endHeight: 60
+        startX: 220,
+        startY: 200,
+        endX: 600,
+        endY: height/2 -150,
+        endWidth: 100,
+        endHeight: 140
     };
 
-    var boxes = [];
+    var messages = [];
+    messages.push('You are the small red square! Reach the big red square!');
+    messages.push('Press WASD/Space to move. Press R to restart the level!');
 
+    var boxes = [];
     // dimensions
     boxes.push({
         x: 0,
@@ -37,29 +40,17 @@
         width: 10,
         height: height
     });
-    // dimensions
+    // end dimensions
 
     boxes.push({
-        x: 120,
-        y: height - 80,
-        width: 80,
-        height: 80
+        x: 200,
+        y: height/2 - 100,
+        width: 40,
+        height: 40
     });
     boxes.push({
-        x: width - width/3,
-        y: height - height/3,
-        width: 80,
-        height: 80
-    });
-    boxes.push({
-        x: width - width/4,
-        y: height/2,
-        width: 80,
-        height: height/2
-    });
-    boxes.push({
-        x: 270,
-        y: 150,
+        x: 400,
+        y: height/2 - 100,
         width: 40,
         height: 40
     });

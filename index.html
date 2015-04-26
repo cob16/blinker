@@ -72,6 +72,7 @@
     }
 
     var boxes = [];
+    var messages = [];
 
     var StartBtn = { //todo add tourtoal text
         w: 100,
@@ -109,8 +110,7 @@
     function loadnewlevel(filename) {
         console.log("loading:" + filename);
         //remove old level
-        delete boxes;
-        delete levelInfo;
+        delete boxes, delete levelInfo, messages;
         //load the new level
         var js = document.createElement('script');
         js.type = "text/javascript";
@@ -327,6 +327,13 @@
                 ctx.arc(player.x + (player.width/2), player.y + (player.height/2), health * teleRadus, 0, 2 * Math.PI);
                 ctx.stroke();
 
+                if (messages.length  > 0) {
+                    ctx.fillStyle = "Red";
+                    ctx.fillText(messages[0], width / 2, height - height / 4);
+
+                    ctx.fillStyle = "Red";
+                    ctx.fillText(messages[1], width / 2, height - height / 4 + 50);
+                }
 
                 //HP BAR
                 var percent = health / maxHealth;
@@ -469,7 +476,7 @@
 
 
     window.addEventListener("load", function () {
-        loadnewlevel("level.0.js");
+        loadnewlevel("level.1.js");
         update();
     });
 
