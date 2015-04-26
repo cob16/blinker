@@ -21,7 +21,7 @@
         window.requestAnimationFrame = requestAnimationFrame;
     })();
 
-    var endLevel = 1;
+    var endLevel = 2;
 
     var gameState = 'start';
 
@@ -117,6 +117,10 @@
             ctx.fillText("To start click the bellow button and follow the onscreen text"
                 ,width / 2, height - height / 3);
 
+            ctx.fillStyle = "black";
+            ctx.fillText("Current best: " + getTotalscore()
+                    ,width / 2, height - height / 3 + 25);
+
 
         }
     };
@@ -174,16 +178,23 @@
     }
 
     function getTotalscore() {
+        if(localStorage.getItem("levelScore-0") == null) {createLocalStorage();} //make the local storage if not present
+
         var o = 0;
         for (var i = 0; i <= endLevel; i++) { //make highscore table
+            if (parseInt(localStorage.getItem("levelScore-" + i)) == 0) {break;} //stop if you have not done that level yet
+
             o += parseInt(localStorage.getItem("levelScore-" + i), 10);
+        }
+        if (o == 0 || o == undefined || o == NaN) {
+            return "None";
         }
         return o;
     }
 
     function getCurrentLevelBest() {
         var o = parseInt(localStorage.getItem("levelScore-" + levelInfo.current), 10);
-        if (localStorage.getItem("levelScore-0") == null || parseInt(o) == 0 || o == undefined ) {
+        if (localStorage.getItem("levelScore-0") == null || parseInt(o, 10) == 0 || o == undefined ) {
             return "None";
         } else return o;
     }
