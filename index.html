@@ -113,15 +113,16 @@
             ctx.fillStlye = "#000000";
             ctx.fillText("Start", StartBtn.x + (StartBtn.w/2), StartBtn.y + (StartBtn.h/2));
 
-            ctx.fillStyle = "black";
-            ctx.fillText("To start click the bellow button and follow the onscreen text"
-                ,width / 2, height - height / 3);
-
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "Red";
             ctx.fillText("Current best: " + getTotalscore()
-                    ,width / 2, height - height / 3 + 25);
+                    ,width / 2, height - height/4  - 50);
 
+            ctx.fillStyle = "black";
+            ctx.font = "25px Arial, sans-serif";
+            ctx.fillText("To start click the below button and follow the onscreen text"
+                ,width / 2, height/2);
 
+            ctx.font =  "18px Arial, sans-serif";//reset
         }
     };
 
@@ -165,6 +166,7 @@
         for (var i = 0; i <= endLevel; i++) { //make highscore table
             localStorage.setItem("levelScore-" + i, 0);
         }
+        localStorage.setItem("lastRecord", 0);
     }
 
     function updateLocalStorage() {
@@ -177,6 +179,12 @@
         console.log("total score" + getTotalscore());
     }
 
+    function updateLastRecord() {
+        var ts = getTotalscore();
+        if (ts > parseInt(localStorage.getItem("lastRecord"), 10)) {
+            localStorage.setItem("lastRecord", ts);
+        }
+    }
     function getTotalscore() {
         if(localStorage.getItem("levelScore-0") == null) {createLocalStorage();} //make the local storage if not present
 
@@ -207,6 +215,7 @@
         }
         else if (gameState == "game complete") {
             console.error("game complete !!");
+            updateLastRecord();
             location.reload(false); //restart the game by reloading the page
         } else {
 
@@ -275,6 +284,7 @@
         }
 
         if (keys[75]) { // k
+            gameComplete();
             //todo debug key
         }
 
@@ -493,8 +503,16 @@
 
         ctx.fillStlye = "Black";
         ctx.font = "30px Arial, sans-serif";
-        ctx.fillText("Congratulations! ", canvas.width/2, finishScreen.x - 60);
-        ctx.fillText("Your total score was " + getTotalscore() + " points.", canvas.width/2, finishScreen.x - 10);
+
+        var lastRecord = parseInt(localStorage.getItem("lastRecord"), 10);
+
+        ctx.fillText("Congratulations! ", canvas.width/2, finishScreen.x - 100);
+        ctx.fillText("Your total score was " + getTotalscore() + " points.", canvas.width/2, finishScreen.x - 50);
+        if (lastRecord < getTotalscore()) {
+            ctx.fillStyle = "Red";
+            ctx.fillText("NEW RECORD!", width/2 , finishScreen.y - 25);
+        }
+        //todo update
     }
 
     document.body.addEventListener("keydown", function (e) {
