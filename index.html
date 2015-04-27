@@ -21,7 +21,7 @@
         window.requestAnimationFrame = requestAnimationFrame;
     })();
 
-    var endLevel = 5;
+    var endLevel = 6;
 
     var gameState = 'start';
     var health = 50;
@@ -303,7 +303,7 @@
 
         if (gameState == "start") {
             StartBtn.draw();
-            console.log("Waiting to start");
+            //console.log("Waiting to start");
         }
         else if (gameState == "game complete") {
             gameComplete();
